@@ -40,4 +40,6 @@ public class Course {
 
     @Column
     private int credit;
+
+
 }
