@@ -1,11 +1,13 @@
 package com.victorlicht.timetable_tlsi.accounts.models;
 
+import com.victorlicht.timetable_tlsi.course.model.Course;
 import com.victorlicht.timetable_tlsi.group.model.StudentGroup;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -27,6 +29,9 @@ public class Professor {
     @Column(columnDefinition = "YEAR")
     private int yearOfTeaching;
 
-    @ManyToMany
-    private Set<StudentGroup> studentGroups;
+    @ManyToMany(mappedBy = "professors")
+    private Set<StudentGroup> studentGroups = new HashSet<>();
+
+    @ManyToMany(mappedBy = "professors")
+    private Set<Course> courses = new HashSet<>();
 }

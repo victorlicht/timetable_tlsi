@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -24,6 +25,6 @@ public class StudentGroup {
     private Speciality speciality;
 
     @ManyToMany
-    private Set<Professor> professors;
+    private Set<Professor> professors = new HashSet<>();
 
 }
