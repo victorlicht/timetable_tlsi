@@ -19,10 +19,13 @@ public class AccountUser {
     private String id;
 
     @Enumerated(EnumType.STRING)
-    private AccountType userType;
+    private AccountType accountType;
 
     @Column(length = 128, nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(length = 128, nullable = false)
+    private String lastName;
 
     @Column(length = 16, unique = true, nullable = false)
     private String username;

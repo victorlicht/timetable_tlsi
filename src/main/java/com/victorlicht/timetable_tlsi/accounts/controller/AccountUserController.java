@@ -1,16 +1,23 @@
 package com.victorlicht.timetable_tlsi.accounts.controller;
 
+import com.victorlicht.timetable_tlsi.accounts.models.AccountType;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountUser;
+import com.victorlicht.timetable_tlsi.accounts.models.Gender;
+import com.victorlicht.timetable_tlsi.accounts.models.Wilaya;
 import com.victorlicht.timetable_tlsi.accounts.service.AccountUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/account-users")
+@RequestMapping("/api/admin/users")
 public class AccountUserController {
 
     private final AccountUserService accountUserService;
@@ -20,40 +27,59 @@ public class AccountUserController {
         this.accountUserService = accountUserService;
     }
 
-    // Create a new AccountUser
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AccountUser> createAccountUser(@RequestBody AccountUser accountUser) {
         AccountUser createdUser = accountUserService.createAccountUser(accountUser);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    // Retrieve an AccountUser by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountUser> getAccountUserById(@PathVariable String id) {
-        return accountUserService.getAccountUserById(id)
-                .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    // Retrieve all AccountUsers
     @GetMapping
     public ResponseEntity<List<AccountUser>> getAllAccountUsers() {
         List<AccountUser> accountUsers = accountUserService.getAllAccountUsers();
         return new ResponseEntity<>(accountUsers, HttpStatus.OK);
     }
 
-    // Update an existing AccountUser
-    @PutMapping("/{id}")
-    public ResponseEntity<AccountUser> updateAccountUser(@PathVariable String id, @RequestBody AccountUser accountUser) {
-        accountUser.setId(id);
-        AccountUser updatedUser = accountUserService.updateAccountUser(accountUser);
-        return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+    @GetMapping("/find")
+    public ResponseEntity<Page<AccountUser>> findUsersDynamically(
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) Date dateOfBirth,
+            @RequestParam(required = false) Gender gender,
+            @RequestParam(required = false) Wilaya wilaya,
+            @RequestParam(required = false) AccountType accountType,
+            @RequestParam(required = false) String orderByField,
+            @RequestParam(defaultValue = "ASC") String sortOrder,
+            Pageable pageable
+    ) {
+        Page<AccountUser> result = accountUserService.findUsersDynamically(
+                phoneNumber, firstName, lastName, email, username,
+                dateOfBirth, gender, wilaya, accountType,
+                orderByField, sortOrder, pageable
+        );
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    // Delete an AccountUser by ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccountUser(@PathVariable String id) {
-        accountUserService.deleteAccountUser(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping("/update/{username}")
+    public ResponseEntity<AccountUser> updateByUsername(@PathVariable String username,@RequestBody AccountUser updatedUser) {
+        try {
+            AccountUser existingUser = accountUserService.findByUsername(username)
+                    .orElseThrow(ChangeSetPersister.NotFoundException::new);
+            existingUser.setFirstName(updatedUser.getFirstName());
+            existingUser.setLastName(updatedUser.getLastName());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setGender(updatedUser.getGender());
+            existingUser.setWilaya(updatedUser.getWilaya());
+            existingUser.setDateOfBirth(updatedUser.getDateOfBirth());
+
+            AccountUser savedUser = accountUserService.updateAccountUser(existingUser);
+            return new ResponseEntity<>(savedUser, HttpStatus.OK);
+        } catch (ChangeSetPersister.NotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

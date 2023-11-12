@@ -46,5 +46,4 @@ public class Session {
     @ManyToOne
     private Speciality speciality;
 
-
 }
