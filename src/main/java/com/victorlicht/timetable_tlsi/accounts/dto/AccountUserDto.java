@@ -11,8 +11,6 @@ import java.sql.Date;
 @Data
 public class AccountUserDto {
 
-    private String id;
-
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 

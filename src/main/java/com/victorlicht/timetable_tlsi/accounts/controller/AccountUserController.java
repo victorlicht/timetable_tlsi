@@ -1,18 +1,18 @@
 package com.victorlicht.timetable_tlsi.accounts.controller;
 
 import com.victorlicht.timetable_tlsi.accounts.dto.AccountUserDto;
+import com.victorlicht.timetable_tlsi.accounts.mapper.AccountUserMapper;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountType;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountUser;
 import com.victorlicht.timetable_tlsi.accounts.models.Gender;
 import com.victorlicht.timetable_tlsi.accounts.models.Wilaya;
 import com.victorlicht.timetable_tlsi.accounts.service.AccountUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
@@ -28,12 +28,6 @@ public class AccountUserController {
         this.accountUserService = accountUserService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<AccountUser> createAccountUser(@RequestBody AccountUser accountUser) {
-        AccountUser createdUser = accountUserService.createAccountUser(accountUser);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-    }
-
     @GetMapping
     public ResponseEntity<Page<AccountUserDto>> findUsersDynamically(
             @RequestParam(required = false) String phoneNumber,
@@ -47,25 +41,46 @@ public class AccountUserController {
             @RequestParam(required = false) AccountType accountType,
             @RequestParam(required = false) String orderByField,
             @RequestParam(defaultValue = "ASC") String sortOrder,
-            Pageable pageable
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "10") int pageSize
     ) {
-        Page<AccountUserDto> result = accountUserService.findUsersDynamically(
+
+        // Validate the page size to the allowed values (10, 25, 50)
+        if (!(pageSize == 10 || pageSize == 25 || pageSize == 50)) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<AccountUserDto> users = accountUserService.findUsersDynamically(
                 phoneNumber, firstName, lastName, email, username,
-                dateOfBirth, gender, wilaya, accountType,
-                orderByField, sortOrder, pageable
+                dateOfBirth, gender, wilaya, accountType, orderByField, sortOrder, pageable
         );
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(users);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<AccountUserDto> createAccountUser(@RequestBody AccountUserDto accountUserDto) {
+        AccountUser createdUser = accountUserService.createAccountUser(AccountUserMapper.toEntity(accountUserDto));
+        return new ResponseEntity<>(AccountUserMapper.toDto(createdUser), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<AccountUserDto> updateByUsername(
+    public ResponseEntity<AccountUserDto> updateAccountUserByUsername(
             @PathVariable String username,
-            @RequestBody @Validated AccountUserDto updatedUserDto) {
+            @RequestBody AccountUserDto updatedUserDto) {
         try {
-            AccountUserDto savedUserDto = accountUserService.updateAccountUserByUsername(username, updatedUserDto);
-            return ResponseEntity.ok(savedUserDto);
-        } catch (ChangeSetPersister.NotFoundException e) {
-            return ResponseEntity.notFound().build();
+            // Retrieve the existing user entity from the service layer
+            AccountUser existingUser = accountUserService.findByUsername(username);
+
+            if (existingUser != null) {
+                // Update the fields with the provided data from updatedUserDto
+                // Assuming your mapper maps the fields properly between the DTO and entity
+                // Update the existing user entity through the service
+                AccountUserDto savedUserDto = accountUserService.updateAccountUser(updatedUserDto, existingUser);
+                return ResponseEntity.ok(savedUserDto);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

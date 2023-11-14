@@ -1,10 +1,8 @@
 package com.victorlicht.timetable_tlsi.accounts.models;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum Wilaya {
     ADRAR(1),
     CHLEF(2),
@@ -66,5 +64,9 @@ public enum Wilaya {
     EL_MENIA(58);
 
     private final int number;
+
+    Wilaya(int number) {
+        this.number = number;
+    }
 }
 

@@ -10,13 +10,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.Date;
-import java.util.List;
 
 interface AccountUserService {
 
     AccountUser createAccountUser(AccountUser accountUser);
-
-    List<AccountUserDto> getAllAccountUsers();
 
     Page<AccountUserDto> findUsersDynamically(
             String phoneNumber,
@@ -35,5 +32,7 @@ interface AccountUserService {
 
     AccountUserDto updateAccountUserByUsername(String username, AccountUserDto updatedUserDto) throws ChangeSetPersister.NotFoundException;
 
-    AccountUserDto findByUsername(String username);
+    AccountUser findByUsername(String username);
+
+    AccountUserDto updateAccountUser(AccountUserDto accountUserDto, AccountUser updatedUser);
 }

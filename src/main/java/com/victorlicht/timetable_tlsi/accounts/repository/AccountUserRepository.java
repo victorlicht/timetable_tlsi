@@ -12,6 +12,4 @@ public interface AccountUserRepository extends JpaRepository<AccountUser, String
 
     //For modified by these
     Optional<AccountUser> findByUsername(String username);
-    Optional<AccountUser> findByPhoneNumber(String phoneNumber);
-    Optional<AccountUser> findByEmail(String email);
 }

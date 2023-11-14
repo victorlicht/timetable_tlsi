@@ -16,6 +16,5 @@ public enum Grade {
     PROFESSOR_D("Professor D"),
     DEPARTMENT_LEADER("Department Leader"),
     VICE_DEPARTMENT("Vice Department");
-
     private final String title;
 }
