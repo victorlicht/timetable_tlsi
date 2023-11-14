@@ -1,29 +1,30 @@
 package com.victorlicht.timetable_tlsi.accounts.controller;
 
+import com.victorlicht.timetable_tlsi.accounts.dto.AccountUserDto;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountType;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountUser;
 import com.victorlicht.timetable_tlsi.accounts.models.Gender;
 import com.victorlicht.timetable_tlsi.accounts.models.Wilaya;
-import com.victorlicht.timetable_tlsi.accounts.service.AccountUserService;
+import com.victorlicht.timetable_tlsi.accounts.service.AccountUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/users")
+@RequestMapping("/api/v1/admin/users")
 public class AccountUserController {
 
-    private final AccountUserService accountUserService;
+    private final AccountUserServiceImpl accountUserService;
 
     @Autowired
-    public AccountUserController(AccountUserService accountUserService) {
+    public AccountUserController(AccountUserServiceImpl accountUserService) {
         this.accountUserService = accountUserService;
     }
 
@@ -34,13 +35,7 @@ public class AccountUserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountUser>> getAllAccountUsers() {
-        List<AccountUser> accountUsers = accountUserService.getAllAccountUsers();
-        return new ResponseEntity<>(accountUsers, HttpStatus.OK);
-    }
-
-    @GetMapping("/find")
-    public ResponseEntity<Page<AccountUser>> findUsersDynamically(
+    public ResponseEntity<Page<AccountUserDto>> findUsersDynamically(
             @RequestParam(required = false) String phoneNumber,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
@@ -54,32 +49,27 @@ public class AccountUserController {
             @RequestParam(defaultValue = "ASC") String sortOrder,
             Pageable pageable
     ) {
-        Page<AccountUser> result = accountUserService.findUsersDynamically(
+        Page<AccountUserDto> result = accountUserService.findUsersDynamically(
                 phoneNumber, firstName, lastName, email, username,
                 dateOfBirth, gender, wilaya, accountType,
                 orderByField, sortOrder, pageable
         );
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return ResponseEntity.ok(result);
     }
 
     @PutMapping("/update/{username}")
-    public ResponseEntity<AccountUser> updateByUsername(@PathVariable String username,@RequestBody AccountUser updatedUser) {
+    public ResponseEntity<AccountUserDto> updateByUsername(
+            @PathVariable String username,
+            @RequestBody @Validated AccountUserDto updatedUserDto) {
         try {
-            AccountUser existingUser = accountUserService.findByUsername(username)
-                    .orElseThrow(ChangeSetPersister.NotFoundException::new);
-            existingUser.setFirstName(updatedUser.getFirstName());
-            existingUser.setLastName(updatedUser.getLastName());
-            existingUser.setEmail(updatedUser.getEmail());
-            existingUser.setGender(updatedUser.getGender());
-            existingUser.setWilaya(updatedUser.getWilaya());
-            existingUser.setDateOfBirth(updatedUser.getDateOfBirth());
-
-            AccountUser savedUser = accountUserService.updateAccountUser(existingUser);
-            return new ResponseEntity<>(savedUser, HttpStatus.OK);
+            AccountUserDto savedUserDto = accountUserService.updateAccountUserByUsername(username, updatedUserDto);
+            return ResponseEntity.ok(savedUserDto);
         } catch (ChangeSetPersister.NotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
 }

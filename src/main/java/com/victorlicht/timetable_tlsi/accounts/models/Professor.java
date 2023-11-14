@@ -29,6 +29,9 @@ public class Professor {
     @Column(columnDefinition = "YEAR")
     private int yearOfTeaching;
 
+
+    private boolean isAdmin;
+
     @ManyToMany(mappedBy = "professors")
     private Set<StudentGroup> studentGroups = new HashSet<>();
 
