@@ -6,7 +6,7 @@ import com.victorlicht.timetable_tlsi.accounts.models.AccountType;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountUser;
 import com.victorlicht.timetable_tlsi.accounts.models.Gender;
 import com.victorlicht.timetable_tlsi.accounts.models.Wilaya;
-import com.victorlicht.timetable_tlsi.accounts.services.AccountUserServiceImpl;
+import com.victorlicht.timetable_tlsi.accounts.services.AccountUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,13 +18,14 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.Date;
 
 @RestController
-@RequestMapping("/api/v1/admin/users")
+@RequestMapping("/api/v1/users")
 public class AccountUserController {
 
-    private final AccountUserServiceImpl accountUserService;
+    private final AccountUserService accountUserService;
+
 
     @Autowired
-    public AccountUserController(AccountUserServiceImpl accountUserService) {
+    public AccountUserController(AccountUserService accountUserService) {
         this.accountUserService = accountUserService;
     }
 
@@ -49,17 +50,19 @@ public class AccountUserController {
         if (!(pageSize == 10 || pageSize == 25 || pageSize == 50)) {
             return ResponseEntity.badRequest().build();
         }
-
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<AccountUserDto> users = accountUserService.findUsersDynamically(
                 phoneNumber, firstName, lastName, email, username,
-                dateOfBirth, gender, wilaya, accountType, orderByField, sortOrder, pageable
+                dateOfBirth, gender, wilaya, accountType,
+                orderByField, sortOrder, pageable
         );
         return ResponseEntity.ok(users);
     }
 
+
     @PostMapping("/create")
-    public ResponseEntity<AccountUserDto> createAccountUser(@RequestBody AccountUserDto accountUserDto) {
+    public ResponseEntity<AccountUserDto> createAccountUser(@RequestBody(required = false) AccountUserDto accountUserDto)
+    {
         AccountUser createdUser = accountUserService.createAccountUser(AccountUserMapper.toEntity(accountUserDto));
         return new ResponseEntity<>(AccountUserMapper.toDto(createdUser), HttpStatus.CREATED);
     }
@@ -69,14 +72,10 @@ public class AccountUserController {
             @PathVariable String username,
             @RequestBody AccountUserDto updatedUserDto) {
         try {
-            // Retrieve the existing user entity from the service layer
             AccountUser existingUser = accountUserService.findByUsername(username);
-
             if (existingUser != null) {
-                // Update the fields with the provided data from updatedUserDto
-                // Assuming your mapper maps the fields properly between the DTO and entity
-                // Update the existing user entity through the service
-                AccountUserDto savedUserDto = accountUserService.updateAccountUser(updatedUserDto, existingUser);
+                AccountUserDto savedUserDto = accountUserService
+                                            .updateAccountUser(updatedUserDto, existingUser);
                 return ResponseEntity.ok(savedUserDto);
             } else {
                 return ResponseEntity.notFound().build();
@@ -85,6 +84,5 @@ public class AccountUserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 
 }

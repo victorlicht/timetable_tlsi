@@ -48,10 +48,10 @@ public class AccountUser {
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String biography;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String profilePicture;
 
     @Column(length = 10, unique = true, nullable = false)

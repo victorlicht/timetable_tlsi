@@ -1,5 +1,7 @@
 package com.victorlicht.timetable_tlsi.accounts.services;
 
-public interface StudentService {
+import com.victorlicht.timetable_tlsi.accounts.models.Student;
 
+public interface StudentService {
+    void createStudentAccount(Student student);
 }

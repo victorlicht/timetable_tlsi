@@ -5,13 +5,12 @@ import com.victorlicht.timetable_tlsi.accounts.models.AccountType;
 import com.victorlicht.timetable_tlsi.accounts.models.AccountUser;
 import com.victorlicht.timetable_tlsi.accounts.models.Gender;
 import com.victorlicht.timetable_tlsi.accounts.models.Wilaya;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.Date;
 
-interface AccountUserService {
+public interface AccountUserService {
 
     AccountUser createAccountUser(AccountUser accountUser);
 
@@ -29,8 +28,6 @@ interface AccountUserService {
             String sortOrder,
             Pageable pageable
     );
-
-    AccountUserDto updateAccountUserByUsername(String username, AccountUserDto updatedUserDto) throws ChangeSetPersister.NotFoundException;
 
     AccountUser findByUsername(String username);
 

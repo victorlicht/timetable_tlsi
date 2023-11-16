@@ -1,9 +1,6 @@
 package com.victorlicht.timetable_tlsi.accounts.repositories;
 
-import com.victorlicht.timetable_tlsi.accounts.models.AccountType;
-import com.victorlicht.timetable_tlsi.accounts.models.AccountUser;
-import com.victorlicht.timetable_tlsi.accounts.models.Gender;
-import com.victorlicht.timetable_tlsi.accounts.models.Wilaya;
+import com.victorlicht.timetable_tlsi.accounts.models.*;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
