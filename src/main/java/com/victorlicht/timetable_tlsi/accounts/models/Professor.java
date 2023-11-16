@@ -27,7 +27,7 @@ public class Professor {
     @Enumerated(EnumType.STRING)
     private Grade grade;
 
-    @Column(columnDefinition = "YEAR")
+    @Column(columnDefinition = "YEAR default 0")
     private int yearOfTeaching;
 
     @Column(columnDefinition = "boolean default false")

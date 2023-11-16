@@ -17,13 +17,15 @@ public class Speciality {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 8)
-    private String major;
+    @Enumerated
+    private Major major;
 
-    @Column(length = 8)
+    @Column(nullable = false)
     private String specialityName;
 
-    @Column(length = 8, unique = true)
+    @Column(length = 8, unique = true, nullable = false)
     private String specialityCode;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
 }

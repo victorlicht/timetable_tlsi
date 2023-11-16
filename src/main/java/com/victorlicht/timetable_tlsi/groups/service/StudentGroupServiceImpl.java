@@ -1,4 +1,8 @@
 package com.victorlicht.timetable_tlsi.groups.service;
 
-public class StudentGroupServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class StudentGroupServiceImpl implements StudentGroupService{
+
 }

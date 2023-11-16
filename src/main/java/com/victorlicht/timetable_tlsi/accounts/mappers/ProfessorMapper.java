@@ -38,6 +38,8 @@ public class ProfessorMapper {
         }
         if (professorDto.getYearOfTeaching() > 0) {
             professor.setYearOfTeaching(professorDto.getYearOfTeaching());
+        }else {
+            professor.setYearOfTeaching(1111);
         }
         if (professorDto.isAdmin()) {
             professor.setAdmin(true);

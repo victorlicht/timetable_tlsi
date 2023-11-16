@@ -20,25 +20,29 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String courseName;
 
-    @Column(length = 6)
+    @Column(length = 6, nullable = false)
     private String courseCode;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Speciality speciality;
 
 
     @ManyToMany
     private Set<Professor> professors = new HashSet<>();
 
-    @Column
+    @Column(nullable = false)
     private int coefficient;
 
-    @Column
+    @Column(nullable = false)
     private int credit;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
 }

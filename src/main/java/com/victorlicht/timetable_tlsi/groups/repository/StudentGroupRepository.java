@@ -1,4 +1,10 @@
 package com.victorlicht.timetable_tlsi.groups.repository;
 
-public interface StudentGroupRepository {
+import com.victorlicht.timetable_tlsi.groups.model.StudentGroup;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface StudentGroupRepository extends JpaRepository<StudentGroup, Long> {
+
 }

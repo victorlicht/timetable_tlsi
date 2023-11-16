@@ -15,13 +15,18 @@ import java.util.Set;
 @Setter
 @Accessors(chain = true)
 @ComponentScan
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"speciality", "groupCode"}))
 @Entity
 public class StudentGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String groupCode;
+
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Speciality speciality;
 
     @ManyToMany

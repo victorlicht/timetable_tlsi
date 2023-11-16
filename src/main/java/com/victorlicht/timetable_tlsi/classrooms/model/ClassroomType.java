@@ -1,7 +1,15 @@
 package com.victorlicht.timetable_tlsi.classrooms.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum ClassroomType {
-    DIRECTED_STUDY_ROOM,
-    PRACTICAL_ROOM,
-    LECTURE_HALL
+    TD("DIRECTED_STUDY_ROOM"),
+    TP("PRACTICAL_ROOM"),
+    AMPHI("LECTURE_HALL");
+
+    private final String classRoomType;
+
 }
