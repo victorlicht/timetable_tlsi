@@ -29,7 +29,7 @@ public class AccountUserController {
         this.accountUserService = accountUserService;
     }
 
-    @GetMapping
+    @GetMapping("/admin/find")
     public ResponseEntity<Page<AccountUserDto>> findUsersDynamically(
             @RequestParam(required = false) String phoneNumber,
             @RequestParam(required = false) String firstName,
@@ -45,8 +45,6 @@ public class AccountUserController {
             @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "10") int pageSize
     ) {
-
-        // Validate the page size to the allowed values (10, 25, 50)
         if (!(pageSize == 10 || pageSize == 25 || pageSize == 50)) {
             return ResponseEntity.badRequest().build();
         }
@@ -59,15 +57,14 @@ public class AccountUserController {
         return ResponseEntity.ok(users);
     }
 
-
-    @PostMapping("/create")
-    public ResponseEntity<AccountUserDto> createAccountUser(@RequestBody(required = false) AccountUserDto accountUserDto)
-    {
+    @PostMapping("/admin/create")
+    public ResponseEntity<AccountUserDto> createAccountUser(
+            @RequestBody(required = false) AccountUserDto accountUserDto) {
         AccountUser createdUser = accountUserService.createAccountUser(AccountUserMapper.toEntity(accountUserDto));
         return new ResponseEntity<>(AccountUserMapper.toDto(createdUser), HttpStatus.CREATED);
     }
 
-    @PutMapping("/update/{username}")
+    @PutMapping("/admin/update/{username}")
     public ResponseEntity<AccountUserDto> updateAccountUserByUsername(
             @PathVariable String username,
             @RequestBody AccountUserDto updatedUserDto) {

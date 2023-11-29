@@ -27,13 +27,13 @@ public class ProfessorController {
         this.professorService = professorService;
     }
 
-    @PostMapping("/create")
+    @PostMapping("/admin/create")
     public ResponseEntity<ProfessorDto> createAccountUser(@RequestBody ProfessorDto professorDto)
     {
         ProfessorDto createdUser = professorService.createProfessorAccountUser(professorDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
-    @GetMapping
+    @GetMapping("/admin/find")
     public ResponseEntity<Page<ProfessorDto>> findUsersDynamically(
             @RequestParam(required = false) AccountUser accountUser,
             @RequestParam(required = false) boolean isAdmin,
@@ -47,7 +47,6 @@ public class ProfessorController {
             @RequestParam(defaultValue = "10") int pageSize
     ) {
 
-        // Validate the page size to the allowed values (10, 25, 50)
         if (!(pageSize == 10 || pageSize == 25 || pageSize == 50)) {
             return ResponseEntity.badRequest().build();
         }

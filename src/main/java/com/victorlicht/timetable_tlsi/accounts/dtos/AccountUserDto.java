@@ -24,8 +24,6 @@ public class AccountUserDto {
 
     private String password;
 
-    private String confirmationPassword;
-
     @Enumerated(EnumType.STRING)
     private Gender gender;
 

@@ -36,9 +36,6 @@ public class AccountUser {
     @Column(length = 60, nullable = false)
     private String password;
 
-    @Column(length = 60, nullable = false)
-    private String confirmationPassword;
-
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
