@@ -82,4 +82,18 @@ public class AccountUserController {
         }
     }
 
+    @DeleteMapping("/admin/delete/{username}")
+    public ResponseEntity<Void> deleteAccountUser(@PathVariable String username) {
+        try {
+            AccountUser existingUser = accountUserService.findByUsername(username);
+            if (existingUser != null) {
+                accountUserService.deleteAccountUser(existingUser);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

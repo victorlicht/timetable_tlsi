@@ -68,5 +68,10 @@ public class AccountUserServiceImpl implements AccountUserService {
         AccountUserMapper.updateEntityFromDto(accountUserDto, updatedUser);
         return AccountUserMapper.toDto(accountUserRepository.save(updatedUser));
     }
+
+    @Override
+    public void deleteAccountUser(AccountUser accountUser) {
+        accountUserRepository.delete(accountUser);
+    }
 }
 

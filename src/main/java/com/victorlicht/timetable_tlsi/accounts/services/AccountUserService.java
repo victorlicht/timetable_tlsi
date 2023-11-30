@@ -32,4 +32,6 @@ public interface AccountUserService {
     AccountUser findByUsername(String username);
 
     AccountUserDto updateAccountUser(AccountUserDto accountUserDto, AccountUser updatedUser);
+
+    void deleteAccountUser(AccountUser accountUser);
 }
