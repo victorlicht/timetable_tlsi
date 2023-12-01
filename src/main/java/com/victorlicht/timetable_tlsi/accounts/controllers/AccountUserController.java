@@ -58,10 +58,17 @@ public class AccountUserController {
     }
 
     @PostMapping("/admin/create")
-    public ResponseEntity<AccountUserDto> createAccountUser(
-            @RequestBody(required = false) AccountUserDto accountUserDto) {
-        AccountUser createdUser = accountUserService.createAccountUser(AccountUserMapper.toEntity(accountUserDto));
-        return new ResponseEntity<>(AccountUserMapper.toDto(createdUser), HttpStatus.CREATED);
+    public ResponseEntity<?> createAccountUser(@RequestBody(required = false) AccountUserDto accountUserDto) {
+        try {
+            AccountUser createdUser = accountUserService.createAccountUser(AccountUserMapper.toEntity(accountUserDto));
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(AccountUserMapper.toDto(createdUser));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to create user: " + e.getMessage());
+        }
     }
 
     @PutMapping("/admin/update/{username}")
@@ -83,7 +90,7 @@ public class AccountUserController {
     }
 
     @DeleteMapping("/admin/delete/{username}")
-    public ResponseEntity<Void> deleteAccountUser(@PathVariable String username) {
+    public ResponseEntity<?> deleteAccountUser(@PathVariable String username) {
         try {
             AccountUser existingUser = accountUserService.findByUsername(username);
             if (existingUser != null) {
