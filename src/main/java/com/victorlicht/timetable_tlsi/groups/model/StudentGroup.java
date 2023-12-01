@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.springframework.context.annotation.ComponentScan;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,22 +13,20 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@ComponentScan
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"speciality", "groupCode"}))
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"speciality_id", "group_code"}))
 public class StudentGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "group_code", nullable = false)
     private String groupCode;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(name = "speciality_id", nullable = false)
     private Speciality speciality;
 
     @ManyToMany
     private Set<Professor> professors = new HashSet<>();
-
 }

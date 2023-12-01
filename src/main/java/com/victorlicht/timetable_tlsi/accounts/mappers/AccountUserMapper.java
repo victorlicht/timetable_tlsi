@@ -12,7 +12,6 @@ public class AccountUserMapper {
         accountUserDto.setUsername(accountUser.getUsername());
         accountUserDto.setEmail(accountUser.getEmail());
         accountUserDto.setPassword(accountUser.getPassword());
-        accountUserDto.setConfirmationPassword(accountUser.getConfirmationPassword());
         accountUserDto.setGender(accountUser.getGender());
         accountUserDto.setWilaya(accountUser.getWilaya());
         accountUserDto.setDateOfBirth(accountUser.getDateOfBirth());
@@ -31,7 +30,6 @@ public class AccountUserMapper {
         accountUser.setUsername(accountUserDto.getUsername());
         accountUser.setEmail(accountUserDto.getEmail());
         accountUser.setPassword(accountUserDto.getPassword());
-        accountUser.setConfirmationPassword(accountUserDto.getConfirmationPassword());
         accountUser.setGender(accountUserDto.getGender());
         accountUser.setWilaya(accountUserDto.getWilaya());
         accountUser.setDateOfBirth(accountUserDto.getDateOfBirth());
@@ -60,9 +58,6 @@ public class AccountUserMapper {
         }
         if (accountUserDto.getPassword() != null) {
             accountUser.setPassword(accountUserDto.getPassword());
-        }
-        if (accountUserDto.getConfirmationPassword() != null) {
-            accountUser.setConfirmationPassword(accountUserDto.getConfirmationPassword());
         }
         if (accountUserDto.getGender() != null) {
             accountUser.setGender(accountUserDto.getGender());
